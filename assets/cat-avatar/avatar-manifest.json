@@ -1,0 +1,939 @@
+{
+ "schema": "motorlab-cat-avatar/1",
+ "generated": "2026-11-08",
+ "canvas": 1024,
+ "sprite_frame_size": 512,
+ "stage_color": "#fdf8ee",
+ "ink_color": "#d3a000",
+ "note": "每帧 512×512 透明 PNG；sprites 是横条，用 background-position 播；play_order/durations_ms 直接按帧号驱动即可。",
+ "clips": [
+  {
+   "id": "ball",
+   "kind": "body",
+   "label": "得意 → 抱毛线球",
+   "dir": "frames",
+   "frames": [
+    "f0-得意.png",
+    "f1-预备.png",
+    "f2-前爪伸出.png",
+    "f3-球入爪.png",
+    "f4-落定.png",
+    "f5-回弹.png"
+   ],
+   "sprite": "sprites/ball.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    240,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1100
+   ],
+   "total_ms": 1760,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "sweat",
+   "kind": "body",
+   "label": "得意 → 汗流浃背",
+   "dir": "frames-sweat",
+   "frames": [
+    "f0-得意.png",
+    "f1-预备.png",
+    "f2-落下.png",
+    "f3-落定前.png",
+    "f4-汗流浃背.png",
+    "f5-压弹.png"
+   ],
+   "sprite": "sprites/sweat.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    240,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1100
+   ],
+   "total_ms": 1760,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "lie",
+   "kind": "body",
+   "label": "得意 → 累瘫",
+   "dir": "frames-lie",
+   "frames": [
+    "f0-得意.png",
+    "f1-预备.png",
+    "f2-落下.png",
+    "f3-落定前.png",
+    "f4-累瘫.png",
+    "f5-压弹.png"
+   ],
+   "sprite": "sprites/lie.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    240,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1100
+   ],
+   "total_ms": 1760,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "yarn",
+   "kind": "body",
+   "label": "得意 → 头顶毛线",
+   "dir": "frames-yarn",
+   "frames": [
+    "f0-得意.png",
+    "f1-预备.png",
+    "f2-落下.png",
+    "f3-落定前.png",
+    "f4-头顶毛线.png",
+    "f5-压弹.png"
+   ],
+   "sprite": "sprites/yarn.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    240,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1100
+   ],
+   "total_ms": 1760,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "pounce",
+   "kind": "body",
+   "label": "得意 → 干饭（掏碗 / 埋头）",
+   "dir": "frames-pounce",
+   "frames": [
+    "f0-得意.png",
+    "f1-预备.png",
+    "f2-掏出碗.png",
+    "f3-埋头.png",
+    "f4-干饭.png",
+    "f5-压弹.png"
+   ],
+   "sprite": "sprites/pounce.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    240,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1100
+   ],
+   "total_ms": 1760,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-question",
+   "kind": "head",
+   "label": "普通 → 问号",
+   "dir": "heads-frames/question",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-question.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-yes",
+   "kind": "head",
+   "label": "普通 → YES!",
+   "dir": "heads-frames/yes",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-yes.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-glasses",
+   "kind": "head",
+   "label": "普通 → 眼镜",
+   "dir": "heads-frames/glasses",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-glasses.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-wink",
+   "kind": "head",
+   "label": "普通 → 眨眼",
+   "dir": "heads-frames/wink",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-wink.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-loading",
+   "kind": "head",
+   "label": "普通 → loading",
+   "dir": "heads-frames/loading",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-loading.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-minimal",
+   "kind": "head",
+   "label": "普通 → 委屈",
+   "dir": "heads-frames/minimal",
+   "frames": [
+    "f0-起始.png",
+    "f1-预备.png",
+    "f2-换图.png",
+    "f3-回弹.png",
+    "f4-落定.png",
+    "f5-settle.png"
+   ],
+   "sprite": "sprites/head-minimal.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    4
+   ],
+   "durations_ms": [
+    200,
+    80,
+    90,
+    80,
+    90,
+    80,
+    1000
+   ],
+   "total_ms": 1620,
+   "loop": false,
+   "holds_on_last": true
+  },
+  {
+   "id": "head-to-body",
+   "kind": "headbody",
+   "label": "猫头 → 全身",
+   "dir": "headbody",
+   "frames": [
+    "f0-猫头.png",
+    "f1-补帧·糊.png",
+    "f2-摊平13.png",
+    "f3-适中14.png",
+    "f4-最长15.png",
+    "f5-适中14.png",
+    "f6-补帧·长出.png",
+    "f7-全身.png"
+   ],
+   "sprite": "sprites/head-to-body.png",
+   "sprite_frame_size": 512,
+   "sprite_ranges": [
+    [
+     0,
+     0,
+     512,
+     512
+    ],
+    [
+     512,
+     0,
+     512,
+     512
+    ],
+    [
+     1024,
+     0,
+     512,
+     512
+    ],
+    [
+     1536,
+     0,
+     512,
+     512
+    ],
+    [
+     2048,
+     0,
+     512,
+     512
+    ],
+    [
+     2560,
+     0,
+     512,
+     512
+    ],
+    [
+     3072,
+     0,
+     512,
+     512
+    ],
+    [
+     3584,
+     0,
+     512,
+     512
+    ]
+   ],
+   "play_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "durations_ms": [
+    260,
+    90,
+    90,
+    90,
+    90,
+    90,
+    90,
+    1200
+   ],
+   "total_ms": 2000,
+   "loop": false,
+   "holds_on_last": true,
+   "play_order_back": [
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1,
+    0
+   ],
+   "label_back": "全身 → 猫头"
+  }
+ ],
+ "problems": []
+}

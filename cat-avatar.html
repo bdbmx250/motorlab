@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fdf8ee">
+<title>猫猫 Avatar · 电机学虚拟实验室</title>
+<style>
+  :root{
+    --cream-hi:#fdf8ee; --cream-lo:#f5eedf; --surface:#fffaf0;
+    --gold:#d3a000; --gold-soft:#e3b24a; --ink:#6b4710; --ink-soft:#9b7b48;
+    --line:rgba(211,160,0,.32);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;min-height:100vh;min-height:100dvh;
+    background:radial-gradient(circle at 50% 38%,var(--cream-hi) 0%,var(--cream-lo) 100%);
+    color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
+    display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;
+  }
+  .top{
+    flex:0 0 auto;display:flex;align-items:center;gap:14px;
+    padding:14px clamp(18px,3vw,42px) 0;
+  }
+  .brand{display:flex;flex-direction:column;gap:2px;line-height:1.1}
+  .brand b{font-size:13px;letter-spacing:.02em;color:var(--ink)}
+  .brand span{font-family:Consolas,monospace;font-size:8px;letter-spacing:.16em;color:var(--ink-soft)}
+  .top .spacer{flex:1}
+  .mode{display:flex;gap:5px;padding:3px;border:1px solid var(--line);border-radius:999px;background:rgba(255,250,240,.55)}
+  .mode button{
+    border:0;background:transparent;color:var(--ink-soft);border-radius:999px;
+    padding:6px 13px;font:inherit;font-size:11px;cursor:pointer;
+  }
+  .mode button.is-active{background:var(--gold);color:#fffdf6}
+  .lab{
+    border:1px solid var(--line);background:rgba(255,250,240,.7);color:var(--ink);
+    border-radius:999px;padding:7px 14px;text-decoration:none;font-size:11px;
+  }
+  .lab:hover{border-color:var(--gold)}
+  .stage{
+    flex:1 1 auto;min-height:0;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    padding:clamp(4px,1.2vh,16px) 4vw 0;
+  }
+  .cat-stage{
+    position:relative;
+    width:62vmin;
+    width:max(140px,min(62vmin,calc(100dvh - 290px)));
+    aspect-ratio:1/1;
+  }
+  #frame{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+    display:none;pointer-events:none;user-select:none;-webkit-user-drag:none;
+    border:0;margin:0;padding:0;background:transparent;filter:none;box-shadow:none;
+    transform:translateY(0);
+  }
+  #frame.is-on{display:block}
+  .boot{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:12px;letter-spacing:.2em;color:rgba(155,123,72,.8);text-align:center;
+    line-height:1.9;padding:0 12%;
+  }
+  .boot[hidden]{display:none}
+  .hud{
+    flex:0 0 auto;display:flex;flex-direction:column;align-items:center;
+    gap:8px;padding:2px 4vw clamp(12px,2.6vh,24px);
+  }
+  .caption{
+    margin:0;display:flex;align-items:baseline;gap:.6em;justify-content:center;
+    font-size:clamp(11px,1.45vmin,13px);letter-spacing:.12em;white-space:nowrap;
+    color:var(--ink-soft);min-height:1.5em;
+  }
+  .caption b{color:var(--ink);font-weight:600}
+  .rows{display:flex;flex-direction:column;gap:7px;width:min(860px,94vw)}
+  .row{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap}
+  .row-label{
+    flex:0 0 auto;width:62px;text-align:right;color:var(--ink-soft);
+    font-family:Consolas,monospace;font-size:8px;letter-spacing:.1em;padding-right:2px;
+  }
+  .btn{
+    appearance:none;border:1px solid var(--line);background:rgba(255,250,240,.62);
+    color:var(--ink);border-radius:999px;padding:7px 13px;font:inherit;
+    font-size:11px;line-height:1.2;cursor:pointer;white-space:nowrap;
+    transition:border-color .15s,background .15s,color .15s;
+  }
+  .btn:hover{border-color:var(--gold)}
+  .btn.is-active{background:var(--gold);border-color:var(--gold);color:#fffdf6}
+  .btn:disabled,.mode button:disabled{opacity:.48;cursor:default}
+  .hint{
+    margin:0;font-size:9px;color:rgba(155,123,72,.72);letter-spacing:.04em;
+    text-align:center;line-height:1.6;
+  }
+  .boot-error{color:#9b5c3f}
+  @media(max-width:760px){
+    .top{gap:8px;padding-top:10px}.brand span{display:none}.lab{display:none}
+    .cat-stage{width:max(140px,min(70vmin,calc(100dvh - 340px)))}
+    .row-label{display:none}.rows{width:100%}.btn{padding:6px 10px;font-size:10px}
+    .hud{gap:6px;padding-bottom:10px}
+  }
+  @media(prefers-reduced-motion:reduce){#frame{transform:translateY(0)!important}}
+</style>
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><b>MOTORLAB / 猫猫 Avatar</b><span>HAND-DRAWN CAT · 12 CLIPS · 12 FPS</span></div>
+    <div class="spacer"></div>
+    <div class="mode" role="group" aria-label="猫头/猫身切换">
+      <button type="button" id="modeBody" class="is-active">猫身</button>
+      <button type="button" id="modeHead">猫头</button>
+    </div>
+    <a class="lab" href="index.html">电机实验台</a>
+  </header>
+
+  <main class="stage" aria-label="猫猫 Avatar 舞台">
+    <div class="cat-stage" id="catStage">
+      <img id="frame" alt="手绘黄色小猫">
+      <p class="boot" id="boot">载入 12 条动画帧…</p>
+    </div>
+  </main>
+
+  <section class="hud">
+    <p class="caption" id="caption"><b id="capAction">得意</b><span aria-hidden="true">·</span><span id="capState">停在这里</span></p>
+    <div class="rows">
+      <div class="row" role="group" aria-label="全身动作">
+        <span class="row-label">BODY</span>
+        <button class="btn is-active" type="button" data-body="idle" aria-pressed="true" disabled>得意</button>
+        <button class="btn" type="button" data-body="ball" aria-pressed="false" disabled>抱毛线球</button>
+        <button class="btn" type="button" data-body="sweat" aria-pressed="false" disabled>汗流浃背</button>
+        <button class="btn" type="button" data-body="lie" aria-pressed="false" disabled>累瘫</button>
+        <button class="btn" type="button" data-body="yarn" aria-pressed="false" disabled>头顶毛线</button>
+        <button class="btn" type="button" data-body="pounce" aria-pressed="false" disabled>干饭</button>
+      </div>
+      <div class="row" role="group" aria-label="猫头表情">
+        <span class="row-label">FACE</span>
+        <button class="btn" type="button" data-head="head-question" aria-pressed="false" disabled>问号</button>
+        <button class="btn" type="button" data-head="head-yes" aria-pressed="false" disabled>YES!</button>
+        <button class="btn" type="button" data-head="head-glasses" aria-pressed="false" disabled>眼镜</button>
+        <button class="btn" type="button" data-head="head-wink" aria-pressed="false" disabled>眨眼</button>
+        <button class="btn" type="button" data-head="head-loading" aria-pressed="false" disabled>loading</button>
+        <button class="btn" type="button" data-head="head-minimal" aria-pressed="false" disabled>委屈</button>
+      </div>
+    </div>
+    <p class="hint">12fps · 播完停在最后一帧 · 不循环 · 不交叉淡化 · 不缩放</p>
+  </section>
+
+<script>
+const MANIFEST = {"schema": "motorlab-cat-avatar/1", "generated": "2026-11-08", "canvas": 1024, "sprite_frame_size": 512, "stage_color": "#fdf8ee", "ink_color": "#d3a000", "note": "每帧 512×512 透明 PNG；sprites 是横条，用 background-position 播；play_order/durations_ms 直接按帧号驱动即可。", "clips": [{"id": "ball", "kind": "body", "label": "得意 → 抱毛线球", "dir": "frames", "frames": ["f0-得意.png", "f1-预备.png", "f2-前爪伸出.png", "f3-球入爪.png", "f4-落定.png", "f5-回弹.png"], "sprite": "sprites/ball.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [240, 80, 90, 80, 90, 80, 1100], "total_ms": 1760, "loop": false, "holds_on_last": true}, {"id": "sweat", "kind": "body", "label": "得意 → 汗流浃背", "dir": "frames-sweat", "frames": ["f0-得意.png", "f1-预备.png", "f2-落下.png", "f3-落定前.png", "f4-汗流浃背.png", "f5-压弹.png"], "sprite": "sprites/sweat.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [240, 80, 90, 80, 90, 80, 1100], "total_ms": 1760, "loop": false, "holds_on_last": true}, {"id": "lie", "kind": "body", "label": "得意 → 累瘫", "dir": "frames-lie", "frames": ["f0-得意.png", "f1-预备.png", "f2-落下.png", "f3-落定前.png", "f4-累瘫.png", "f5-压弹.png"], "sprite": "sprites/lie.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [240, 80, 90, 80, 90, 80, 1100], "total_ms": 1760, "loop": false, "holds_on_last": true}, {"id": "yarn", "kind": "body", "label": "得意 → 头顶毛线", "dir": "frames-yarn", "frames": ["f0-得意.png", "f1-预备.png", "f2-落下.png", "f3-落定前.png", "f4-头顶毛线.png", "f5-压弹.png"], "sprite": "sprites/yarn.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [240, 80, 90, 80, 90, 80, 1100], "total_ms": 1760, "loop": false, "holds_on_last": true}, {"id": "pounce", "kind": "body", "label": "得意 → 干饭（掏碗 / 埋头）", "dir": "frames-pounce", "frames": ["f0-得意.png", "f1-预备.png", "f2-掏出碗.png", "f3-埋头.png", "f4-干饭.png", "f5-压弹.png"], "sprite": "sprites/pounce.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [240, 80, 90, 80, 90, 80, 1100], "total_ms": 1760, "loop": false, "holds_on_last": true}, {"id": "head-question", "kind": "head", "label": "普通 → 问号", "dir": "heads-frames/question", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-question.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-yes", "kind": "head", "label": "普通 → YES!", "dir": "heads-frames/yes", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-yes.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-glasses", "kind": "head", "label": "普通 → 眼镜", "dir": "heads-frames/glasses", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-glasses.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-wink", "kind": "head", "label": "普通 → 眨眼", "dir": "heads-frames/wink", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-wink.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-loading", "kind": "head", "label": "普通 → loading", "dir": "heads-frames/loading", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-loading.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-minimal", "kind": "head", "label": "普通 → 委屈", "dir": "heads-frames/minimal", "frames": ["f0-起始.png", "f1-预备.png", "f2-换图.png", "f3-回弹.png", "f4-落定.png", "f5-settle.png"], "sprite": "sprites/head-minimal.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 4], "durations_ms": [200, 80, 90, 80, 90, 80, 1000], "total_ms": 1620, "loop": false, "holds_on_last": true}, {"id": "head-to-body", "kind": "headbody", "label": "猫头 → 全身", "dir": "headbody", "frames": ["f0-猫头.png", "f1-补帧·糊.png", "f2-摊平13.png", "f3-适中14.png", "f4-最长15.png", "f5-适中14.png", "f6-补帧·长出.png", "f7-全身.png"], "sprite": "sprites/head-to-body.png", "sprite_frame_size": 512, "sprite_ranges": [[0, 0, 512, 512], [512, 0, 512, 512], [1024, 0, 512, 512], [1536, 0, 512, 512], [2048, 0, 512, 512], [2560, 0, 512, 512], [3072, 0, 512, 512], [3584, 0, 512, 512]], "play_order": [0, 1, 2, 3, 4, 5, 6, 7], "durations_ms": [260, 90, 90, 90, 90, 90, 90, 1200], "total_ms": 2000, "loop": false, "holds_on_last": true, "play_order_back": [7, 6, 5, 4, 3, 2, 1, 0], "label_back": "全身 → 猫头"}], "problems": []};
+const METRICS = {"frames/f0-得意.png": {"top": 149, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "frames/f1-预备.png": {"top": 133, "bottom": 853, "left": 120, "right": 892, "h": 1024}, "frames/f2-前爪伸出.png": {"top": 119, "bottom": 797, "left": 158, "right": 939, "h": 1024}, "frames/f3-球入爪.png": {"top": 282, "bottom": 685, "left": 198, "right": 968, "h": 1024}, "frames/f4-落定.png": {"top": 229, "bottom": 815, "left": 124, "right": 918, "h": 1024}, "frames/f5-回弹.png": {"top": 246, "bottom": 817, "left": 116, "right": 927, "h": 1024}, "frames-sweat/f0-得意.png": {"top": 149, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "frames-sweat/f1-预备.png": {"top": 133, "bottom": 863, "left": 123, "right": 897, "h": 1024}, "frames-sweat/f2-落下.png": {"top": 119, "bottom": 832, "left": 168, "right": 900, "h": 1024}, "frames-sweat/f3-落定前.png": {"top": 230, "bottom": 794, "left": 222, "right": 886, "h": 1024}, "frames-sweat/f4-汗流浃背.png": {"top": 232, "bottom": 792, "left": 150, "right": 874, "h": 1024}, "frames-sweat/f5-压弹.png": {"top": 251, "bottom": 797, "left": 142, "right": 882, "h": 1024}, "frames-lie/f0-得意.png": {"top": 149, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "frames-lie/f1-预备.png": {"top": 133, "bottom": 857, "left": 124, "right": 892, "h": 1024}, "frames-lie/f2-落下.png": {"top": 119, "bottom": 796, "left": 176, "right": 913, "h": 1024}, "frames-lie/f3-落定前.png": {"top": 325, "bottom": 718, "left": 178, "right": 910, "h": 1024}, "frames-lie/f4-累瘫.png": {"top": 325, "bottom": 703, "left": 133, "right": 871, "h": 1024}, "frames-lie/f5-压弹.png": {"top": 338, "bottom": 707, "left": 125, "right": 879, "h": 1024}, "frames-yarn/f0-得意.png": {"top": 149, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "frames-yarn/f1-预备.png": {"top": 133, "bottom": 857, "left": 128, "right": 905, "h": 1024}, "frames-yarn/f2-落下.png": {"top": 35, "bottom": 803, "left": 206, "right": 894, "h": 1024}, "frames-yarn/f3-落定前.png": {"top": 143, "bottom": 733, "left": 303, "right": 874, "h": 1024}, "frames-yarn/f4-头顶毛线.png": {"top": 186, "bottom": 862, "left": 290, "right": 796, "h": 1024}, "frames-yarn/f5-压弹.png": {"top": 204, "bottom": 863, "left": 285, "right": 802, "h": 1024}, "frames-pounce/f0-得意.png": {"top": 149, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "frames-pounce/f1-预备.png": {"top": 133, "bottom": 863, "left": 127, "right": 898, "h": 1024}, "frames-pounce/f2-掏出碗.png": {"top": 119, "bottom": 845, "left": 177, "right": 871, "h": 1024}, "frames-pounce/f3-埋头.png": {"top": 500, "bottom": 823, "left": 218, "right": 811, "h": 1024}, "frames-pounce/f4-干饭.png": {"top": 212, "bottom": 812, "left": 152, "right": 856, "h": 1024}, "frames-pounce/f5-压弹.png": {"top": 232, "bottom": 816, "left": 144, "right": 864, "h": 1024}, "heads-frames/question/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/question/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/question/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/question/f3-回弹.png": {"top": 124, "bottom": 955, "left": 205, "right": 928, "h": 1024}, "heads-frames/question/f4-落定.png": {"top": 153, "bottom": 944, "left": 192, "right": 945, "h": 1024}, "heads-frames/question/f5-settle.png": {"top": 159, "bottom": 943, "left": 188, "right": 951, "h": 1024}, "heads-frames/yes/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/yes/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/yes/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/yes/f3-回弹.png": {"top": 207, "bottom": 748, "left": 158, "right": 934, "h": 1024}, "heads-frames/yes/f4-落定.png": {"top": 232, "bottom": 748, "left": 144, "right": 952, "h": 1024}, "heads-frames/yes/f5-settle.png": {"top": 237, "bottom": 748, "left": 139, "right": 957, "h": 1024}, "heads-frames/glasses/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/glasses/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/glasses/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/glasses/f3-回弹.png": {"top": 213, "bottom": 763, "left": 219, "right": 808, "h": 1024}, "heads-frames/glasses/f4-落定.png": {"top": 237, "bottom": 762, "left": 207, "right": 820, "h": 1024}, "heads-frames/glasses/f5-settle.png": {"top": 242, "bottom": 762, "left": 203, "right": 824, "h": 1024}, "heads-frames/wink/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/wink/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/wink/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/wink/f3-回弹.png": {"top": 211, "bottom": 765, "left": 216, "right": 809, "h": 1024}, "heads-frames/wink/f4-落定.png": {"top": 236, "bottom": 764, "left": 204, "right": 821, "h": 1024}, "heads-frames/wink/f5-settle.png": {"top": 241, "bottom": 764, "left": 200, "right": 825, "h": 1024}, "heads-frames/loading/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/loading/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/loading/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/loading/f3-回弹.png": {"top": 204, "bottom": 739, "left": 158, "right": 935, "h": 1024}, "heads-frames/loading/f4-落定.png": {"top": 230, "bottom": 739, "left": 144, "right": 953, "h": 1024}, "heads-frames/loading/f5-settle.png": {"top": 235, "bottom": 739, "left": 139, "right": 958, "h": 1024}, "heads-frames/minimal/f0-起始.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "heads-frames/minimal/f1-预备.png": {"top": 268, "bottom": 766, "left": 184, "right": 840, "h": 1024}, "heads-frames/minimal/f2-换图.png": {"top": 299, "bottom": 764, "left": 167, "right": 857, "h": 1024}, "heads-frames/minimal/f3-回弹.png": {"top": 202, "bottom": 775, "left": 210, "right": 814, "h": 1024}, "heads-frames/minimal/f4-落定.png": {"top": 228, "bottom": 773, "left": 197, "right": 827, "h": 1024}, "heads-frames/minimal/f5-settle.png": {"top": 233, "bottom": 773, "left": 193, "right": 831, "h": 1024}, "headbody/f0-猫头.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}, "headbody/f1-补帧·糊.png": {"top": 358, "bottom": 775, "left": 106, "right": 918, "h": 1024}, "headbody/f2-摊平13.png": {"top": 317, "bottom": 673, "left": 177, "right": 845, "h": 1024}, "headbody/f3-适中14.png": {"top": 364, "bottom": 641, "left": 322, "right": 702, "h": 1024}, "headbody/f4-最长15.png": {"top": 282, "bottom": 708, "left": 288, "right": 733, "h": 1024}, "headbody/f5-适中14.png": {"top": 364, "bottom": 641, "left": 322, "right": 702, "h": 1024}, "headbody/f6-补帧·长出.png": {"top": 251, "bottom": 895, "left": 185, "right": 838, "h": 1024}, "headbody/f7-全身.png": {"top": 365, "bottom": 875, "left": 114, "right": 909, "h": 1024}, "heads/head-plain.png": {"top": 233, "bottom": 768, "left": 200, "right": 824, "h": 1024}};
+const BASE = 'assets/cat-avatar/';
+const BODY_FLOOR = 875;          // 1024 canvas: the 得意 floor
+const HEAD_CENTER = 512;         // head/headbody: content bbox centre
+const CLIPS = Object.fromEntries(MANIFEST.clips.map(c => [c.id, c]));
+const BODY_IDS = ['ball','sweat','lie','yarn','pounce'];
+const HEAD_IDS = ['head-question','head-yes','head-glasses','head-wink','head-loading','head-minimal'];
+const BODY_LABELS = {idle:'得意', ball:'抱毛线球', sweat:'汗流浃背', lie:'累瘫', yarn:'头顶毛线', pounce:'干饭'};
+const HEAD_LABELS = {'head-question':'问号','head-yes':'YES!','head-glasses':'眼镜','head-wink':'眨眼','head-loading':'loading','head-minimal':'委屈'};
+
+const frameEl = document.getElementById('frame');
+const bootEl = document.getElementById('boot');
+const capAction = document.getElementById('capAction');
+const capState = document.getElementById('capState');
+const modeBody = document.getElementById('modeBody');
+const modeHead = document.getElementById('modeHead');
+const bodyBtns = [...document.querySelectorAll('[data-body]')];
+const headBtns = [...document.querySelectorAll('[data-head]')];
+
+let mode = 'body';
+let bodyState = 'idle';
+let headState = 'normal';
+let busy = false;
+let timer = 0;
+let ready = false;
+
+function relOf(clip, file){ return clip.dir + '/' + file; }
+function srcOf(rel){ return encodeURI(BASE + rel); }
+function isBodyKind(kind){ return kind === 'body'; }
+function alignFor(rel){
+  const m = METRICS[rel];
+  if (!m) return 'translateY(0)';
+  let dy;
+  if (isBodyKind(arguments[1])) dy = (BODY_FLOOR - m.bottom) / m.h * 100;
+  else dy = (HEAD_CENTER - (m.top + m.bottom) / 2) / m.h * 100;
+  return 'translateY(' + dy.toFixed(4) + '%)';
+}
+function showRel(rel, kind){
+  frameEl.src = srcOf(rel);
+  frameEl.style.transform = alignFor(rel, kind);
+  frameEl.classList.add('is-on');
+}
+function showBodyIdle(){ showRel('frames/f0-得意.png', 'body'); capAction.textContent = '得意'; capState.textContent = '停在这里'; }
+function showHeadNormal(){ showRel('heads/head-plain.png', 'head'); capAction.textContent = '普通猫头'; capState.textContent = '停在这里'; }
+function setCaption(action, state){ capAction.textContent = action; capState.textContent = state || ''; }
+function clearTimer(){ if (timer){ clearTimeout(timer); timer = 0; } }
+
+function setModeUI(){
+  modeBody.classList.toggle('is-active', mode === 'body');
+  modeHead.classList.toggle('is-active', mode === 'head');
+  bodyBtns.forEach(b => b.classList.toggle('is-active', mode === 'body' && b.dataset.body === bodyState));
+  headBtns.forEach(b => b.classList.toggle('is-active', mode === 'head' && b.dataset.head === headState));
+}
+function setControlsDisabled(v){
+  [...bodyBtns, ...headBtns, modeBody, modeHead].forEach(el => { el.disabled = v || !ready; });
+}
+function setBusy(v){ busy = v; [...bodyBtns,...headBtns].forEach(b => { if (!ready) b.disabled = true; }); }
+
+function frameAt(clip, fi){ return clip.frames[fi]; }
+function orderFor(clip, dir){ return dir === 'back' ? (clip.play_order_back || clip.play_order.slice().reverse()) : clip.play_order; }
+
+function playClip(clip, dir, done){
+  clearTimer();
+  busy = true;
+  setControlsDisabled(true);
+  const order = orderFor(clip, dir);
+  let step = 0;
+  setModeUI();
+
+  function tick(){
+    const rel = relOf(clip, frameAt(clip, order[step]));
+    showRel(rel, clip.kind);
+    const last = step === order.length - 1;
+    setCaption(clip.label, (dir === 'back' ? '反向 · ' : '') + frameAt(clip, order[step]).replace(/^f\d+-/, '').replace(/\.png$/, '') + (last ? '（停留）' : ''));
+    if (last){
+      timer = setTimeout(function(){
+        timer = 0; busy = false;
+        setControlsDisabled(false);
+        if (typeof done === 'function') done();
+        setModeUI();
+      }, clip.durations_ms[step] || 80);
+      return;
+    }
+    step += 1;
+    timer = setTimeout(tick, clip.durations_ms[step - 1] || 80);
+  }
+  tick();
+}
+
+function playBody(id, after){
+  if (id === 'idle'){ showBodyIdle(); bodyState = 'idle'; setModeUI(); if (after) after(); return; }
+  const clip = CLIPS[id];
+  playClip(clip, 'forward', function(){
+    bodyState = id; setModeUI(); if (after) after();
+  });
+}
+function reverseBody(id, after){
+  const clip = CLIPS[id];
+  if (!clip){ showBodyIdle(); bodyState = 'idle'; if (after) after(); return; }
+  playClip(clip, 'back', function(){
+    bodyState = 'idle'; showBodyIdle(); setModeUI(); if (after) after();
+  });
+}
+function targetBody(id){
+  if (busy || !ready) return;
+  if (id === bodyState && id !== 'idle') return;
+  if (id === 'idle'){
+    if (bodyState === 'idle') { showBodyIdle(); return; }
+    reverseBody(bodyState, function(){ bodyState = 'idle'; showBodyIdle(); setModeUI(); });
+    return;
+  }
+  if (bodyState !== 'idle' && bodyState !== id){
+    reverseBody(bodyState, function(){ playBody(id); });
+  } else {
+    playBody(id);
+  }
+}
+function playHead(id, after){
+  const clip = CLIPS[id];
+  playClip(clip, 'forward', function(){ headState = id; setModeUI(); if (after) after(); });
+}
+function reverseHead(after){
+  // current expression → normal via the reverse of its own clip, then show normal
+  const clip = CLIPS[headState];
+  if (!clip){ headState = 'normal'; showHeadNormal(); setModeUI(); if (after) after(); return; }
+  playClip(clip, 'back', function(){
+    headState = 'normal'; showHeadNormal(); setModeUI(); if (after) after();
+  });
+}
+function targetHead(id){
+  if (busy || !ready) return;
+  if (id === headState) return;
+  if (headState !== 'normal') reverseHead(function(){ playHead(id); });
+  else playHead(id);
+}
+
+function switchMode(next, after){
+  if (busy || !ready || next === mode) return;
+  const clip = CLIPS['head-to-body'];
+  if (next === 'head'){
+    const go = () => playClip(clip, 'back', function(){
+      mode = 'head'; headState = 'normal'; showHeadNormal(); setModeUI();
+      if (after) after();
+    });
+    if (bodyState !== 'idle') reverseBody(bodyState, go); else go();
+  } else {
+    const go = () => playClip(clip, 'forward', function(){
+      mode = 'body'; bodyState = 'idle'; showBodyIdle(); setModeUI();
+      if (after) after();
+    });
+    if (headState !== 'normal') reverseHead(go); else go();
+  }
+}
+
+function goHead(id){
+  if (busy || !ready) return;
+  if (mode === 'head') targetHead(id);
+  else switchMode('head', function(){ targetHead(id); });
+}
+function goBody(id){
+  if (busy || !ready) return;
+  if (mode === 'body') targetBody(id);
+  else switchMode('body', function(){ targetBody(id); });
+}
+
+// preload: all frames + head normal; then show idle and unlock buttons
+function preload(){
+  const rels = [];
+  MANIFEST.clips.forEach(c => c.frames.forEach(f => {
+    const rel = c.dir + '/' + f;
+    if (!rels.includes(rel)) rels.push(rel);
+  }));
+  if (!rels.includes('heads/head-plain.png')) rels.push('heads/head-plain.png');
+  let left = rels.length;
+  let failed = 0;
+  if (!left){ finish(); return; }
+  rels.forEach(rel => {
+    const img = new Image();
+    img.onload = () => { if (--left === 0) finish(); };
+    img.onerror = () => { failed += 1; if (--left === 0) finish(); };
+    img.src = srcOf(rel);
+  });
+  function finish(){
+    ready = true;
+    bootEl.hidden = true;
+    showBodyIdle();
+    setModeUI();
+    setControlsDisabled(false);
+    if (failed) {
+      capState.textContent = '部分素材加载失败（' + failed + '）';
+    }
+  }
+}
+
+bodyBtns.forEach(b => b.addEventListener('click', () => goBody(b.dataset.body)));
+headBtns.forEach(b => b.addEventListener('click', () => goHead(b.dataset.head)));
+modeBody.addEventListener('click', () => switchMode('body'));
+modeHead.addEventListener('click', () => switchMode('head'));
+
+// QA/automation hook; not part of the visual UI
+window.__CAT_AVATAR__ = {
+  manifest: MANIFEST, metrics: METRICS,
+  play: (id, dir) => { const c = CLIPS[id]; if (c) playClip(c, dir || 'forward'); },
+  state: () => ({ mode, bodyState, headState, busy, ready })
+};
+setControlsDisabled(true);
+preload();
+</script>
+</body>
+</html>

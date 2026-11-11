@@ -1,0 +1,25 @@
+{
+  "name": "电机学虚拟实验室 / MotorLab",
+  "short_name": "MotorLab",
+  "description": "四机型电机学 3D 虚拟实验与实时教学仿真",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#12181c",
+  "theme_color": "#12181c",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

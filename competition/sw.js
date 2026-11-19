@@ -1,6 +1,6 @@
 ﻿/* MotorLab competition sub-site — network-first shell cache.
    Bump CACHE_NAME on every release so returning visitors get the new build. */
-const CACHE_NAME = 'motorlab-competition-v32-dc-iron-transition';
+const CACHE_NAME = 'motorlab-competition-v33-dc-rotor-legacy-map';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

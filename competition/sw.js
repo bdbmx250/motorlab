@@ -1,6 +1,6 @@
 ﻿/* MotorLab competition sub-site — network-first shell cache.
    Bump CACHE_NAME on every release so returning visitors get the new build. */
-const CACHE_NAME = 'motorlab-competition-v34-dc-legacy-wave';
+const CACHE_NAME = 'motorlab-competition-v35-dc-flux-color';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
